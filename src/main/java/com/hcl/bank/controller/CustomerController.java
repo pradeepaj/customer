@@ -43,9 +43,8 @@ public class CustomerController {
 	}
 	@DeleteMapping("/customer/{id}")
 	public ResponseEntity<CustomerBean> deleteCustomer(@PathVariable("id") long id) {
-		System.out.println("---"+id);
-		customerService.deleteCustomer(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		CustomerBean mybean=customerService.deleteCustomer(id);
+		return new ResponseEntity<>(mybean,HttpStatus.OK);
 		
 	}
 }

@@ -12,6 +12,6 @@ public interface CustomerService {
 
 	CustomerBean updateCustomer(CustomerBean customerBean);
 
-	void deleteCustomer(long id);
+	CustomerBean deleteCustomer(long id);
 
 }

@@ -8,6 +8,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
@@ -44,28 +48,32 @@ public class CustomerControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.mockMvc = MockMvcBuilders.standaloneSetup(CustomerController.class).build();
+		this.mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
 	}
 
 	@Test
 	public void getCustomerTest() throws JsonProcessingException, Exception {
+		List<CustomerBean> custBeanList = new ArrayList<>();
 		CustomerBean custBean = new CustomerBean(1, "pradeep", 2345, "bglr");
-		when(customerService.getCustomer(1)).thenReturn(custBean);
-		this.mockMvc.perform(
-				get("/create/{id}", 1).contentType(MediaType.APPLICATION_JSON).content(asJsonString(custBean)));
-		ResponseEntity<CustomerBean> bean = customerController.getCustomer(1);
-		System.out.println(bean);
-		assertEquals(200, bean.getStatusCodeValue());
+		custBeanList.add(custBean);
+		ResponseEntity<List<CustomerBean>> res=new ResponseEntity<>(custBeanList, HttpStatus.OK);
+		Mockito.when(customerService.getCustomer(Mockito.anyLong())).thenReturn(custBeanList);
+		this.mockMvc
+				.perform(get("/bank/{id}", 1).contentType(MediaType.APPLICATION_JSON).content(asJsonString(custBeanList)))
+				.andReturn();
+		ResponseEntity<List<CustomerBean>> res1=	customerController.getCustomer(1);
+		assertEquals(res,res1);
 
 	}
 
-	
-	@Test(expected = NestedServletException.class)
+	@Test
 	public void addCustomerTest() throws JsonProcessingException, Exception {
 
 		CustomerBean customerBean = new CustomerBean(1L, "Laxman", 90888, "Blore");
 		when(customerService.addCustomer(Mockito.anyObject())).thenReturn(customerBean);
-		this.mockMvc.perform(post("/customer/create").contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerBean))).andReturn();
+		this.mockMvc.perform(
+				post("/bank/customer").contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerBean)))
+				.andReturn();
 		ResponseEntity<CustomerBean> custResponseEntity = customerController.addCustomer(customerBean);
 		assertEquals(201, custResponseEntity.getStatusCodeValue());
 	}
@@ -75,7 +83,7 @@ public class CustomerControllerTest {
 
 		CustomerBean customerBean1 = new CustomerBean(1L, "Aniketa", 903546, "HCL Blore");
 		when(customerService.updateCustomer(Mockito.anyObject())).thenReturn(customerBean1);
-		this.mockMvc.perform(put("/customer/update").contentType(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(put("/bank/{id}", 1L).contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(Mockito.anyObject())));
 		ResponseEntity<CustomerBean> custResponseEntity = customerController.updateCustomer(customerBean1);
 		System.out.println(custResponseEntity);
@@ -85,10 +93,13 @@ public class CustomerControllerTest {
 	@Test
 	public void deleteCustomerTest() throws JsonProcessingException, Exception {
 		CustomerBean customerBean1 = new CustomerBean(1L, "Aniketa", 903546, "HCL Blore");
-		doNothing().when(customerService).deleteCustomer(Mockito.anyLong());
-		this.mockMvc.perform(delete("/customer/delete").contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(customerBean1)));
-		customerController.deleteCustomer(1L);
+		ResponseEntity<CustomerBean> res1 = new ResponseEntity<>(customerBean1, HttpStatus.OK);
+		when(customerService.deleteCustomer(Mockito.anyLong())).thenReturn(customerBean1);
+		this.mockMvc.perform(delete("/bank/customer/{id}", 1L).contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(customerBean1))).andReturn();
+		ResponseEntity<CustomerBean> res = customerController.deleteCustomer(1L);
+		assertEquals(res1, res);
+
 	}
 
 	public static String asJsonString(final Object object) throws JsonProcessingException {

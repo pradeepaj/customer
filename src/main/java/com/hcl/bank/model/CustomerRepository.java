@@ -49,9 +49,10 @@ public class CustomerRepository {
 		return customerBean;
 	}
 	
-	public void deleteCustomer(long id) {
+	public CustomerBean deleteCustomer(long id) {
 		CustomerBean customerBean2= getCustomerDetail(id);
 		customerData.remove(customerBean2);
+		return customerBean2;
 	}
 	
 	private CustomerBean getCustomerDetail(long id) {

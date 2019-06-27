@@ -9,6 +9,8 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 @ToString
+@Setter
+@NoArgsConstructor
 public class CustomerBean {
 	
 	private long id;
