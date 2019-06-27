@@ -52,7 +52,7 @@ public class CustomerServiceImplTest {
 		System.out.println(cus);
 
 		assertEquals(custBean1, cus);
-
+//jneifnyihby
 	}
 
 	@Test
