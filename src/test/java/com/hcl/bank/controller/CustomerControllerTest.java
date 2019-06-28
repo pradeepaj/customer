@@ -7,8 +7,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,7 @@ import com.hcl.bank.service.CustomerService;
 @RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = { TestContext.class, CustomerController.class })
 @WebAppConfiguration
+
 public class CustomerControllerTest {
 
 	@InjectMocks
@@ -51,15 +53,15 @@ public class CustomerControllerTest {
 
 	@Test
 	public void getCustomerTest() throws JsonProcessingException, Exception {
-		List<CustomerBean> custBeanList = new ArrayList<>();
+		Map<Long,CustomerBean> custBeanMap = new HashMap<>();
 		CustomerBean custBean = new CustomerBean(1, "pradeep", 2345, "bglr");
-		custBeanList.add(custBean);
-		ResponseEntity<List<CustomerBean>> res=new ResponseEntity<>(custBeanList, HttpStatus.OK);
-		Mockito.when(customerService.getCustomer(Mockito.anyLong())).thenReturn(custBeanList);
+		custBeanMap.put(custBean.getId(),custBean);
+		ResponseEntity<Object> res=new ResponseEntity<>(custBeanMap, HttpStatus.OK);
+		Mockito.when(customerService.getCustomer(Mockito.anyLong())).thenReturn(custBeanMap);
 		this.mockMvc
-				.perform(get("/bank/{id}", 1).contentType(MediaType.APPLICATION_JSON).content(asJsonString(custBeanList)))
+				.perform(get("/bank/{id}", 1).contentType(MediaType.APPLICATION_JSON).content(asJsonString(custBeanMap)))
 				.andReturn();
-		ResponseEntity<List<CustomerBean>> res1=	customerController.getCustomer(1);
+		ResponseEntity<Object> res1=	customerController.getCustomer(1);
 		assertEquals(res,res1);
 
 	}
@@ -72,7 +74,7 @@ public class CustomerControllerTest {
 		this.mockMvc.perform(
 				post("/bank/customer").contentType(MediaType.APPLICATION_JSON).content(asJsonString(customerBean)))
 				.andReturn();
-		ResponseEntity<CustomerBean> custResponseEntity = customerController.addCustomer(customerBean);
+		ResponseEntity<Object> custResponseEntity = customerController.addCustomer(customerBean);
 		assertEquals(201, custResponseEntity.getStatusCodeValue());
 	}
 
@@ -83,7 +85,7 @@ public class CustomerControllerTest {
 		when(customerService.updateCustomer(Mockito.anyObject())).thenReturn(customerBean1);
 		this.mockMvc.perform(put("/bank/{id}", 1L).contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(Mockito.anyObject())));
-		ResponseEntity<CustomerBean> custResponseEntity = customerController.updateCustomer(customerBean1);
+		ResponseEntity<Object> custResponseEntity = customerController.updateCustomer(customerBean1);
 		System.out.println(custResponseEntity);
 		assertEquals(201, custResponseEntity.getStatusCodeValue());
 	}
@@ -95,7 +97,7 @@ public class CustomerControllerTest {
 		when(customerService.deleteCustomer(Mockito.anyLong())).thenReturn(customerBean1);
 		this.mockMvc.perform(delete("/bank/customer/{id}", 1L).contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(customerBean1))).andReturn();
-		ResponseEntity<CustomerBean> res = customerController.deleteCustomer(1L);
+		ResponseEntity<Object> res = customerController.deleteCustomer(1L);
 		assertEquals(res1, res);
 
 	}

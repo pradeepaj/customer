@@ -1,17 +1,17 @@
 package com.hcl.bank.service;
 
-import java.util.List;
+import java.util.Map;
 
 import com.hcl.bank.bean.CustomerBean;
 
 public interface CustomerService {
 
-	CustomerBean addCustomer(CustomerBean customerBean);
+	Object addCustomer(CustomerBean customerBean);
 
-	List<CustomerBean> getCustomer(long id);
+	Object getCustomer(long id);
 
-	CustomerBean updateCustomer(CustomerBean customerBean);
+	Object updateCustomer(CustomerBean customerBean);
 
-	CustomerBean deleteCustomer(long id);
+	Object deleteCustomer(long id);
 
 }

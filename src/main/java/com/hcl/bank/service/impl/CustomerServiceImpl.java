@@ -1,7 +1,6 @@
 package com.hcl.bank.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,36 +16,30 @@ public class CustomerServiceImpl implements CustomerService {
 	private CustomerRepository custRepo;
 
 	@Override
-	public CustomerBean addCustomer(CustomerBean customerBean) {
+	public Object addCustomer(CustomerBean customerBean) {
 		return custRepo.addCustomer(customerBean);
 	}
 
 	@Override
-	public List<CustomerBean> getCustomer(long id) {
-		
-		List<CustomerBean> custBeanList = custRepo.getCustomer();
-		List<CustomerBean> custBeanData = new ArrayList<>();
-		
-		for(CustomerBean custBean : custBeanList) {
-			if(custBean.getId()==id) {
-				custBeanData.add(custBean);
-				break;
-			}
-		}
-		if(custBeanData.isEmpty()) {
-			return custBeanList;
+	public Object getCustomer(long id) {
+
+		Map<Long, CustomerBean> custBeanMap = custRepo.getCustomer();
+
+		if (custBeanMap.containsKey(id)) {
+			return custBeanMap.get(id);
 		} else {
-			return custBeanData;
+			return custBeanMap;
 		}
+
 	}
 
 	@Override
-	public CustomerBean updateCustomer(CustomerBean customerBean) {
+	public Object updateCustomer(CustomerBean customerBean) {
 		return custRepo.updateCustomer(customerBean);
 	}
 
 	@Override
-	public CustomerBean deleteCustomer(long id) {
+	public Object deleteCustomer(long id) {
 		return custRepo.deleteCustomer(id);
 	}
 

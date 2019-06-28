@@ -1,7 +1,7 @@
 package com.hcl.bank.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -10,61 +10,52 @@ import com.hcl.bank.bean.CustomerBean;
 @Repository
 public class CustomerRepository {
 
-	static List<CustomerBean> customerData = new ArrayList<>();
-	
+	static Map<Long, CustomerBean> customerMap = new HashMap<>();
+
 	static {
-		CustomerBean customerBean1 =  new CustomerBean(1001L, "Laxman verma", 90456788, "Blore");
-		CustomerBean customerBean2 =  new CustomerBean(1002L, "Pradepa AJ", 903456, "Blore");
-		CustomerBean customerBean3 =  new CustomerBean(1003L, "Ankite Panda", 804658, "Bhopal");
-		customerData.add(customerBean1);
-		customerData.add(customerBean2);
-		customerData.add(customerBean3);
+
+		CustomerBean customerBean1 = new CustomerBean(1001L, "Laxman verma", 90456788, "Blore");
+		CustomerBean customerBean2 = new CustomerBean(1002L, "Pradepa AJ", 903456, "Blore");
+		CustomerBean customerBean3 = new CustomerBean(1003L, "Ankite Panda", 804658, "Bhopal");
+		customerMap.put(customerBean1.getId(), customerBean1);
+		customerMap.put(customerBean2.getId(), customerBean2);
+		customerMap.put(customerBean3.getId(), customerBean3);
 	}
 
-	public CustomerBean addCustomer(CustomerBean custBean) {
-		if(customerData.add(custBean)) {
-			return custBean;
+	public Object addCustomer(CustomerBean custBean) {
+		if (custBean != null) {
+			customerMap.put(custBean.getId(), custBean);
 		}
-		return null;
+		return customerMap.get(custBean.getId());
 	}
 
-	public List<CustomerBean> getCustomer() {
-		return customerData;
+	public Map<Long, CustomerBean> getCustomer() {
+		return customerMap;
 	}
 
-	
+	public Object updateCustomer(CustomerBean customerBean) {
 
-	public CustomerBean updateCustomer(CustomerBean customerBean) {
-		CustomerBean customerBean1=null;
-		if(!customerData.isEmpty()) {
-			for(CustomerBean custBean:customerData) {
-				if(custBean.getId()==customerBean.getId()) {
-					customerBean1=custBean;
-					break;
-				}
-			}
+		if (customerMap.containsKey(customerBean.getId())) {
+			customerMap.put(customerBean.getId(), customerBean);
 		}
-		customerData.remove(customerBean1);
-		customerData.add(customerBean);
-		return customerBean;
+		return customerMap.get(customerBean.getId());
 	}
-	
-	public CustomerBean deleteCustomer(long id) {
-		CustomerBean customerBean2= getCustomerDetail(id);
-		customerData.remove(customerBean2);
-		return customerBean2;
+
+	public Object deleteCustomer(long id) {
+		customerMap.remove(id);
+		return customerMap;
 	}
-	
-	private CustomerBean getCustomerDetail(long id) {
-		CustomerBean customerBean=null;
-		if(!customerData.isEmpty()) {
-			for(CustomerBean custBean:customerData) {
-				if(custBean.getId()==id) {
-					customerBean=custBean;
-					break;
-				}
-			}
-		}
-		return customerBean;
-	}
+
+//private CustomerBean getCustomerDetail(long id) {
+//		CustomerBean customerBean=null;
+//		if(!customerData.isEmpty()) {
+//		for(CustomerBean custBean:customerData) {
+//				if(custBean.getId()==id) {
+//					customerBean=custBean;
+//				break;
+//				}
+//		}
+//		}
+//	return customerBean;
+//	}
 }

@@ -3,8 +3,8 @@ package com.hcl.bank.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,39 +27,41 @@ public class CustomerServiceImplTest {
 	public void addCustomerTest() {
 		CustomerBean custBean = new CustomerBean(1, "pradeep", 2345, "bglr");
 		when(customerRepository.addCustomer(custBean)).thenReturn(custBean);
-		CustomerBean bean = customerServiceImpl.addCustomer(custBean);
+		Object bean = customerServiceImpl.addCustomer(custBean);
 		assertEquals(custBean, bean);
 
 	}
 
 	@Test
 	public void getCustomerTest() {
-		List<CustomerBean> li = new ArrayList<>();
+		Map<Long, CustomerBean> beanMap = new HashMap<>();
 		CustomerBean custBean = new CustomerBean(1, "pradeep", 2345, "bglr");
-		li.add(custBean);
-		when(customerRepository.getCustomer()).thenReturn(li);
-		List<CustomerBean> cusb = customerServiceImpl.getCustomer(1);
-		assertEquals(li, cusb);
+		beanMap.put(custBean.getId(),custBean);
+		when(customerRepository.getCustomer()).thenReturn(beanMap);
+		Object cusb = customerServiceImpl.getCustomer(1L);
+		assertEquals(custBean, cusb);
 	}
 
 	@Test
 	public void updateCustomerTest() {
+		Map<Long, CustomerBean> beanMap = new HashMap<>();
 		CustomerBean custBean = new CustomerBean(1, "pradeep", 2345, "bglr");
 		CustomerBean custBean1 = new CustomerBean(1, "aj", 2345678, "kolkata");
+		beanMap.put(custBean.getId(), custBean);
 		when(customerRepository.updateCustomer(Mockito.anyObject())).thenReturn(custBean1);
-		CustomerBean cus = customerServiceImpl.updateCustomer(custBean1);
-		System.out.println(custBean);
-		System.out.println(cus);
-
+		Object cus = customerServiceImpl.updateCustomer(custBean1);
 		assertEquals(custBean1, cus);
-//jneifnyihby
+
+
 	}
 
 	@Test
 	public void deleteCustomerTest() {
+		
 		CustomerBean custBean = new CustomerBean(1, "pradeep", 2345, "bglr");
+		
 		when(customerRepository.deleteCustomer(Mockito.anyLong())).thenReturn(custBean);
-		CustomerBean cust = customerServiceImpl.deleteCustomer(1);
+		Object cust = customerServiceImpl.deleteCustomer(1);
 		assertEquals(custBean, cust);
 
 	}

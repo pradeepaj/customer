@@ -1,6 +1,6 @@
 package com.hcl.bank.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,26 +25,28 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
-	
+
 	@PostMapping("/customer")
-	public ResponseEntity<CustomerBean> addCustomer(@RequestBody CustomerBean customerBean){
-		CustomerBean custBean = customerService.addCustomer(customerBean);
+	public ResponseEntity<Object> addCustomer(@RequestBody CustomerBean customerBean) {
+		Object custBean = customerService.addCustomer(customerBean);
 		return new ResponseEntity<>(custBean, HttpStatus.CREATED);
 	}
+
 	@GetMapping("/{id}")
-	public ResponseEntity<List<CustomerBean>> getCustomer(@PathVariable ("id") long id) {
-		List<CustomerBean> custBeanList=customerService.getCustomer(id);
-		return new ResponseEntity<>(custBeanList, HttpStatus.OK);
+	public ResponseEntity<Object> getCustomer(@PathVariable("id") long id) {
+		Object custBean = customerService.getCustomer(id);
+		return new ResponseEntity<>(custBean, HttpStatus.OK);
 	}
+
 	@PutMapping("/customer")
-	public ResponseEntity<CustomerBean> updateCustomer(@RequestBody CustomerBean customerBean){
-		CustomerBean custBean=customerService.updateCustomer(customerBean);
-		return new ResponseEntity<>(custBean,HttpStatus.CREATED);
+	public ResponseEntity<Object> updateCustomer(@RequestBody CustomerBean customerBean) {
+		Object custBean = customerService.updateCustomer(customerBean);
+		return new ResponseEntity<>(custBean, HttpStatus.CREATED);
 	}
 	@DeleteMapping("/customer/{id}")
-	public ResponseEntity<CustomerBean> deleteCustomer(@PathVariable("id") long id) {
-		CustomerBean mybean=customerService.deleteCustomer(id);
-		return new ResponseEntity<>(mybean,HttpStatus.OK);
-		
-	}
+	public ResponseEntity<Object> deleteCustomer(@PathVariable("id") long id) {
+		Object mybean=customerService.deleteCustomer(id);
+	return new ResponseEntity<>(mybean,HttpStatus.OK);
+	
+}
 }
